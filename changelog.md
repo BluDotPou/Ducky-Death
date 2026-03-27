@@ -1,2 +1,5 @@
-# 1.0.0
-- Edit this file to change your mod's changelog.
+# Changelog
+
+## v1.0.0
+- Added random death messages
+- Language selector (EN/ES)

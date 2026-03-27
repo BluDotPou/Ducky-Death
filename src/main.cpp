@@ -1,6 +1,7 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/PlayLayer.hpp>
 #include <Geode/modify/MenuLayer.hpp>
+#include <Geode/ui/Popup.hpp>
 
 #include <cstdlib>
 #include <map>
@@ -11,32 +12,14 @@ using namespace geode::prelude;
 
 static std::string idiomaGlobal = "en";
 
-class IdiomaAlert : public FLAlertLayerProtocol {
-public:
-    void show() {
-        FLAlertLayer::create(
-            this,
-            "Language",
-            "Choose your language",
-            "Español",
-            "English"
-        )->show();
-    }
-
-    void FLAlert_Clicked(FLAlertLayer*, bool btn2) override {
-        idiomaGlobal = btn2 ? "en" : "es";
-        Mod::get()->setSavedValue("idioma", idiomaGlobal);
-        delete this;
-    }
-};
-
 class $modify(DuckyDeath, PlayLayer) {
     struct Fields {
         bool yaMostrado = false;
     };
 
     bool init(GJGameLevel* level, bool p1, bool p2) {
-        if (!PlayLayer::init(level, p1, p2)) return false;
+        if (!PlayLayer::init(level, p1, p2))
+            return false;
 
         idiomaGlobal = Mod::get()->getSavedValue<std::string>("idioma", "en");
         return true;
@@ -54,17 +37,17 @@ class $modify(DuckyDeath, PlayLayer) {
                 "casi lo logras",
                 "vas bien",
                 "xD",
-                "¡No te rindas!",
+                "No te rindas!",
                 "La gravedad te odia",
                 "Un click tarde...",
                 "Ese triple spike no era para tanto",
                 "Respira... y dale otra vez",
                 "Estas calentando",
-                "Fue el lag, ¿verdad?",
-                "¡Tu puedes, Ducky!",
+                "Fue el lag, verdad?",
+                "Tu puedes, Ducky!",
                 "Casi 100%",
                 "Pura practica",
-                "¡No rompas el mouse!",
+                "No rompas el mouse!",
                 "Un intento mas...",
                 "Checkmate",
                 "A la proxima sale"
@@ -103,8 +86,8 @@ class $modify(DuckyDeath, PlayLayer) {
             return;
         }
 
-        int index = std::rand() % static_cast<int>(lista.size());
-        std::string texto = lista[index];
+        auto index = std::rand() % static_cast<int>(lista.size());
+        auto texto = lista[index];
 
         auto label = CCLabelBMFont::create(texto.c_str(), "goldFont.fnt");
         auto winSize = CCDirector::sharedDirector()->getWinSize();
@@ -130,12 +113,14 @@ class $modify(DuckyDeath, PlayLayer) {
 
 class $modify(MyMenuLayer, MenuLayer) {
     bool init() {
-        if (!MenuLayer::init()) return false;
+        if (!MenuLayer::init())
+            return false;
 
         idiomaGlobal = Mod::get()->getSavedValue<std::string>("idioma", "en");
 
         auto sprite = CCSprite::create("buscar.png"_spr);
-        if (!sprite) return true;
+        if (!sprite)
+            return true;
 
         auto btn = CCMenuItemSpriteExtra::create(
             sprite,
@@ -148,13 +133,22 @@ class $modify(MyMenuLayer, MenuLayer) {
 
         if (auto bottom = this->getChildByID("bottom-menu")) {
             bottom->addChild(btn);
+            bottom->updateLayout();
         }
 
         return true;
     }
 
     void abrirMenu(CCObject*) {
-        auto* alert = new IdiomaAlert();
-        alert->show();
+        geode::createQuickPopup(
+            "Language",
+            "Choose your language",
+            "ES",
+            "EN",
+            [](FLAlertLayer*, bool btn2) {
+                idiomaGlobal = btn2 ? "en" : "es";
+                Mod::get()->setSavedValue("idioma", idiomaGlobal);
+            }
+        );
     }
 };
