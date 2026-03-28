@@ -160,7 +160,7 @@ class $modify(MyMenuLayer, MenuLayer) {
             "Ducky Settings",
             "Choose an option",
             "Language",
-            "Toggle Mod",
+            "Toggle Message",
             [](FLAlertLayer*, bool btn2) {
                 if (btn2) {
                     bool enabled = Mod::get()->getSavedValue("MessageOfDeathEnabled", true);
