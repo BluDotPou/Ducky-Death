@@ -29,48 +29,64 @@ class $modify(DuckyDeath, PlayLayer) {
         PlayLayer::destroyPlayer(player, obj);
 
         if (m_fields->yaMostrado) return;
+        if (!Mod::get()->getSavedValue("MessageOfDeathEnabled", true)) return;
+
+        if (this->m_isPracticeMode) return;
+        if (this->m_attempts <= 1) return;
+        if (this->m_level && this->getCurrentPercent() > this->m_level->m_normalPercent) return;
+
         m_fields->yaMostrado = true;
 
         std::map<std::string, std::vector<std::string>> mensajes = {
             {"es", {
                 "skill issue",
-                "casi lo logras",
-                "vas bien",
-                "xD",
-                "No te rindas!",
-                "La gravedad te odia",
-                "Un click tarde...",
-                "Ese triple spike no era para tanto",
-                "Respira... y dale otra vez",
-                "Estas calentando",
-                "Fue el lag, verdad?",
-                "Tu puedes, Ducky!",
-                "Casi 100%",
-                "Pura practica",
-                "No rompas el mouse!",
-                "Un intento mas...",
-                "Checkmate",
-                "A la proxima sale"
+                "te falta gaming",
+                "eso no fue un error... fue arte",
+                "el spike te estaba esperando",
+                "ese click fue opcional verdad?",
+                "el timing se fue de vacaciones",
+                "eso dolio mas que tarea sorpresa",
+                "bro piensa que esto es facil",
+                "respira... y vuelve a fallar",
+                "casi... pero no",
+                "eso conto como intento?",
+                "el nivel: 1 - tu: 0",
+                "lag mental detectado",
+                "modo manco activado",
+                "eso fue speedrun de morir",
+                "nuevo record: decepcion",
+                "faltaron manos ahi",
+                "eso fue planificado... seguro",
+                "pro gamer moment",
+                "ese spike te hizo bully",
+                "te ganaron los pixeles",
+                "intenta no morir challenge (imposible)",
+                "casi inicio el juego"
             }},
             {"en", {
                 "skill issue",
-                "almost",
-                "you're doing good",
-                "lol",
-                "Don't give up!",
-                "Gravity is your enemy",
-                "One frame late...",
-                "That triple spike though",
-                "Take a breath",
-                "You're just warming up",
-                "It was lag, definitely",
-                "You got this, Ducky!",
-                "Basically 100%",
-                "Practice makes perfect",
-                "Don't smash the mouse!",
-                "One more attempt...",
-                "Focus!",
-                "Next time for sure"
+                "bro forgot how to click",
+                "that spike had a personal vendetta",
+                "that click was optional right?",
+                "timing.exe stopped working",
+                "this was not the plan",
+                "almost... not really",
+                "new record: disappointment",
+                "pro gamer moment",
+                "you vs spike, spike wins",
+                "mental lag detected",
+                "hands not found",
+                "speedrun death any%",
+                "that was tragic",
+                "you tried... kinda",
+                "press space to not die (failed)",
+                "this level is laughing at you",
+                "the spike predicted your move",
+                "that was painful to watch",
+                "retry simulator",
+                "you blinked and died",
+                "mission failed successfully",
+                "67"
             }}
         };
 
@@ -128,7 +144,7 @@ class $modify(MyMenuLayer, MenuLayer) {
             menu_selector(MyMenuLayer::abrirMenu)
         );
 
-        btn->setPosition({0.f, -100.f});
+        btn->setPosition({0.f, -80.f});
         btn->setScale(0.5f);
 
         if (auto bottom = this->getChildByID("bottom-menu")) {
@@ -141,13 +157,35 @@ class $modify(MyMenuLayer, MenuLayer) {
 
     void abrirMenu(CCObject*) {
         geode::createQuickPopup(
+            "Ducky Settings",
+            "Choose an option",
             "Language",
-            "Choose your language",
-            "ES",
-            "EN",
+            "Toggle Mod",
             [](FLAlertLayer*, bool btn2) {
-                idiomaGlobal = btn2 ? "en" : "es";
-                Mod::get()->setSavedValue("idioma", idiomaGlobal);
+                if (btn2) {
+                    bool enabled = Mod::get()->getSavedValue("MessageOfDeathEnabled", true);
+                    enabled = !enabled;
+                    Mod::get()->setSavedValue("MessageOfDeathEnabled", enabled);
+
+                    geode::createQuickPopup(
+                        "Info",
+                        enabled ? "Message enabled" : "Message disabled",
+                        "OK",
+                        "Que me importa",
+                        [](FLAlertLayer*, bool) {}
+                    );
+                } else {
+                    geode::createQuickPopup(
+                        "Language",
+                        "Choose your language",
+                        "ES",
+                        "EN",
+                        [](FLAlertLayer*, bool btn2) {
+                            idiomaGlobal = btn2 ? "en" : "es";
+                            Mod::get()->setSavedValue("idioma", idiomaGlobal);
+                        }
+                    );
+                }
             }
         );
     }
