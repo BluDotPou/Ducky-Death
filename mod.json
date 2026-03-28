@@ -8,7 +8,7 @@
     },
     "id": "bludot.ducky_death",
     "name": "Ducky Death",
-    "version": "1.2.0",
+    "version": "1.2.2",
     "developer": "BluDot",
     "description": "Show a random message when you die",
     "dependencies": {
