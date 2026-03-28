@@ -1,5 +1,7 @@
 # Changelog
 
-## v1.0.0
-- Added random death messages
-- Language selector (EN/ES)
+## v1.1.1
+- Fixed popup system
+- Improved compatibility
+- Fixed UI layout
+- Removed unsupported characters
